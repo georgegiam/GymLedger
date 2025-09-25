@@ -1,6 +1,13 @@
 import { useEffect, useState } from "react";
 import { auth, db } from "../../firebase";
-import { collection, getDocs, query, orderBy } from "firebase/firestore";
+import {
+  collection,
+  getDocs,
+  query,
+  orderBy,
+  doc,
+  deleteDoc,
+} from "firebase/firestore";
 import styles from "../css/dashboard.module.css";
 
 interface Set {
@@ -15,39 +22,80 @@ interface Exercise {
 
 interface Workout {
   id: string;
-  date: Date;
+  date: string; // <-- formatted string
   exercises: Exercise[];
+  notes?: string;
 }
 
 function History() {
   const [workouts, setWorkouts] = useState<Workout[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchWorkouts = async () => {
-      if (!auth.currentUser) return;
+  const fetchWorkouts = async () => {
+    if (!auth.currentUser) return;
 
-      const workoutsRef = collection(
+    const workoutsRef = collection(
+      db,
+      "users",
+      auth.currentUser.uid,
+      "workouts"
+    );
+    const q = query(workoutsRef, orderBy("date", "desc"));
+    const snapshot = await getDocs(q);
+
+    const fetched: Workout[] = snapshot.docs.map((doc) => {
+      const timestamp = doc.data().date;
+      const dateStr =
+        timestamp instanceof Object && "toDate" in timestamp
+          ? formatDate(timestamp.toDate())
+          : String(timestamp);
+
+      return {
+        id: doc.id,
+        date: dateStr,
+        exercises: doc.data().exercises,
+        notes: doc.data().notes || "",
+      };
+    });
+
+    setWorkouts(fetched);
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    fetchWorkouts();
+  }, []);
+
+  const handleDelete = async (workoutId: string) => {
+    if (!auth.currentUser) return;
+    if (!window.confirm("Are you sure you want to delete this workout?"))
+      return;
+
+    try {
+      const workoutDoc = doc(
         db,
         "users",
         auth.currentUser.uid,
-        "workouts"
+        "workouts",
+        workoutId
       );
-      const q = query(workoutsRef, orderBy("date", "desc"));
-      const snapshot = await getDocs(q);
+      await deleteDoc(workoutDoc);
 
-      const fetched: Workout[] = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        date: doc.data().date.toDate(), // Firestore timestamp → JS Date
-        exercises: doc.data().exercises,
-      }));
+      setWorkouts((prev) => prev.filter((w) => w.id !== workoutId));
+    } catch (err: any) {
+      alert(err.message || "Failed to delete workout");
+    }
+  };
 
-      setWorkouts(fetched);
-      setLoading(false);
+  const formatDate = (date: Date) => {
+    const options: Intl.DateTimeFormatOptions = {
+      weekday: "long",
+      day: "numeric",
+      month: "long",
+      year: "numeric",
     };
-
-    fetchWorkouts();
-  }, []);
+    return date.toLocaleDateString("en-US", options);
+  };
 
   if (loading) return <p>Loading workouts...</p>;
   if (workouts.length === 0) return <p>No workouts logged yet.</p>;
@@ -57,7 +105,15 @@ function History() {
       <h4>Workout History</h4>
       {workouts.map((workout) => (
         <div key={workout.id} className="card mb-3">
-          <div className="card-header">{workout.date.toLocaleDateString()}</div>
+          <div className="card-header d-flex justify-content-between align-items-center">
+            <span>{workout.date}</span>
+            <button
+              className="btn btn-sm btn-danger"
+              onClick={() => handleDelete(workout.id)}
+            >
+              Delete
+            </button>
+          </div>
           <div className="card-body">
             {workout.exercises.map((exercise, i) => (
               <div key={i} className="mb-2">
@@ -71,6 +127,13 @@ function History() {
                 </ul>
               </div>
             ))}
+
+            {workout.notes && (
+              <div className="mt-2">
+                <strong>Notes:</strong>
+                <p>{workout.notes}</p>
+              </div>
+            )}
           </div>
         </div>
       ))}

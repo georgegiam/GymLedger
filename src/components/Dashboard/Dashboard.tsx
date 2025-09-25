@@ -25,8 +25,9 @@ interface Exercise {
 
 interface Workout {
   id: string;
-  date: Date;
+  date: string; // <-- now a formatted string
   exercises: Exercise[];
+  notes?: string;
 }
 
 function Dashboard() {
@@ -61,8 +62,9 @@ function Dashboard() {
 
       const fetched: Workout[] = snapshot.docs.map((doc) => ({
         id: doc.id,
-        date: doc.data().date.toDate(),
+        date: doc.data().date, // already a formatted string
         exercises: doc.data().exercises,
+        notes: doc.data().notes || "",
       }));
 
       setWorkouts(fetched);
@@ -95,9 +97,7 @@ function Dashboard() {
         {workouts.map((workout) => (
           <div key={workout.id} className="col">
             <div className="card h-100">
-              <div className="card-header">
-                {workout.date.toLocaleDateString()}
-              </div>
+              <div className="card-header">{workout.date}</div>
               <div className="card-body">
                 {workout.exercises.map((exercise, i) => (
                   <div key={i} className="mb-2">
@@ -111,6 +111,13 @@ function Dashboard() {
                     </ul>
                   </div>
                 ))}
+
+                {workout.notes && (
+                  <div className="mt-2">
+                    <strong>Notes:</strong>
+                    <p>{workout.notes}</p>
+                  </div>
+                )}
               </div>
             </div>
           </div>
