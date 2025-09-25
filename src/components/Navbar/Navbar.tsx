@@ -17,8 +17,8 @@ function Navbar() {
   return (
     <nav className="navbar navbar-expand-lg bg-body-tertiary">
       <div className="container-fluid">
-        <Link className="navbar-brand" to="/adminBase/dashboard">
-          PointWave
+        <Link className="navbar-brand" to="/dashboardBase/dashboard">
+          GymLedger
         </Link>
         <button
           className="navbar-toggler"
@@ -34,13 +34,8 @@ function Navbar() {
         <div className="collapse navbar-collapse" id="navbarSupportedContent">
           <ul className="navbar-nav me-auto mb-2 mb-lg-0">
             <li className="nav-item">
-              <Link className="nav-link" to="/adminBase/dashboard">
-                Clients
-              </Link>
-            </li>
-            <li className="nav-item">
-              <Link className="nav-link" to="/adminBase/leadboard">
-                Leaderboard
+              <Link className="nav-link" to="/dashboardBase/history">
+                Workout History
               </Link>
             </li>
             {/* Add dropdown or other links here if needed */}

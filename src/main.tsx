@@ -9,6 +9,8 @@ import Login from "./components/Login/Login";
 import Register from "./components/Register/Register";
 import DashboardBase from "./components/Dashboard/Dashboardbase";
 import Dashboard from "./components/Dashboard/Dashboard";
+import NewWorkout from "./components/NewWorkout/NewWorkout";
+import History from "./components/History/History";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -27,6 +29,8 @@ createRoot(document.getElementById("root")!).render(
           }
         >
           <Route path="dashboard" element={<Dashboard />} />
+          <Route path="newWorkout" element={<NewWorkout />} />
+          <Route path="history" element={<History />} />
         </Route>
       </Routes>
     </Router>
