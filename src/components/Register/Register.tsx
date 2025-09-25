@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import {
   createUserWithEmailAndPassword,
   setPersistence,
@@ -8,6 +8,7 @@ import {
 import { auth, db } from "../../firebase"; // make sure db is Firestore
 import { doc, setDoc } from "firebase/firestore";
 import styles from "../css/dashboard.module.css";
+import BaseNavbar from "../../BaseNavbar";
 
 function Register() {
   const [fullName, setFullName] = useState("");
@@ -56,59 +57,65 @@ function Register() {
   };
 
   return (
-    <div className={`${styles.dashboard} container w-25 mb-5`}>
-      <form onSubmit={handleSubmit}>
-        <div className="mb-3">
-          <label className="form-label">Full Name</label>
-          <input
-            type="text"
-            className="form-control"
-            value={fullName}
-            onChange={(e) => setFullName(e.target.value)}
-            required
-          />
-        </div>
+    <>
+      <BaseNavbar />
+      <div className={`${styles.dashboard} container w-25 mb-5`}>
+        <form onSubmit={handleSubmit}>
+          <div className="mb-3">
+            <label className="form-label">Name</label>
+            <input
+              type="text"
+              className="form-control"
+              value={fullName}
+              onChange={(e) => setFullName(e.target.value)}
+              required
+            />
+          </div>
 
-        <div className="mb-3">
-          <label className="form-label">Email address</label>
-          <input
-            type="email"
-            className="form-control"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-        </div>
+          <div className="mb-3">
+            <label className="form-label">Email address</label>
+            <input
+              type="email"
+              className="form-control"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </div>
 
-        <div className="mb-3">
-          <label className="form-label">Password</label>
-          <input
-            type="password"
-            className="form-control"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-        </div>
+          <div className="mb-3">
+            <label className="form-label">Password</label>
+            <input
+              type="password"
+              className="form-control"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </div>
 
-        <div className="mb-3">
-          <label className="form-label">Confirm Password</label>
-          <input
-            type="password"
-            className="form-control"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            required
-          />
-        </div>
+          <div className="mb-3">
+            <label className="form-label">Confirm Password</label>
+            <input
+              type="password"
+              className="form-control"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              required
+            />
+          </div>
 
-        {error && <div className="alert alert-danger">{error}</div>}
+          {error && <div className="alert alert-danger">{error}</div>}
 
-        <button type="submit" className="btn btn-primary w-100">
-          Register
-        </button>
-      </form>
-    </div>
+          <button type="submit" className="btn btn-primary w-100">
+            Register
+          </button>
+        </form>
+        <p className="mt-4">
+          Already have an account? <Link to="/login">Login</Link>
+        </p>
+      </div>
+    </>
   );
 }
 
