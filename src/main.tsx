@@ -7,7 +7,7 @@ import PrivateRoute from "./PrivateRoute";
 import Home from "./components/Home";
 import Login from "./components/Login/Login";
 import Register from "./components/Register/Register";
-import DashboardBase from "./components/Dashboard/Dashboardbase";
+import DashboardBase from "./components/Dashboard/DashboardBase";
 import Dashboard from "./components/Dashboard/Dashboard";
 import NewWorkout from "./components/NewWorkout/NewWorkout";
 import History from "./components/History/History";

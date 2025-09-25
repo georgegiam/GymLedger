@@ -1,5 +1,3 @@
-import { useNavigate, Link } from "react-router-dom";
-
 function BaseNavbar() {
   return (
     <>
