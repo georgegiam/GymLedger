@@ -1,4 +1,4 @@
-import { useNavigate, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import BaseNavbar from "../BaseNavbar";
 
 function Home() {
