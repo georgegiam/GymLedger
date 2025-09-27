@@ -43,6 +43,11 @@ function Navbar() {
                 Profile
               </Link>
             </li>
+            <li className="nav-item">
+              <Link className="nav-link" to="/dashboardBase/progress">
+                Progress
+              </Link>
+            </li>
           </ul>
           <div className="d-flex">
             <button

@@ -12,6 +12,7 @@ import Dashboard from "./components/Dashboard/Dashboard";
 import NewWorkout from "./components/NewWorkout/NewWorkout";
 import History from "./components/History/History";
 import Profile from "./components/Profile/Profile";
+import Progress from "./components/Progress/Progress";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -33,6 +34,7 @@ createRoot(document.getElementById("root")!).render(
           <Route path="newWorkout" element={<NewWorkout />} />
           <Route path="history" element={<History />} />
           <Route path="profile" element={<Profile />} />
+          <Route path="progress" element={<Progress />} />
         </Route>
       </Routes>
     </Router>
