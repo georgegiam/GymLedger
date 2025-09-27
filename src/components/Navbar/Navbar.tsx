@@ -38,7 +38,11 @@ function Navbar() {
                 Workout History
               </Link>
             </li>
-            {/* Add dropdown or other links here if needed */}
+            <li className="nav-item">
+              <Link className="nav-link" to="/dashboardBase/profile">
+                Profile
+              </Link>
+            </li>
           </ul>
           <div className="d-flex">
             <button
