@@ -110,7 +110,16 @@ function AddWorkout() {
   return (
     <>
       <div className={`${styles.dashboard} container w-50 mb-5`}>
-        <h4>New Workout</h4>
+        <div className="d-flex mb-3 mt-4">
+          <div className="me-auto align-self-center">
+            <h4>New Workout</h4>
+          </div>
+          <div className="align-self-center">
+            <button type="submit" className="btn btn-sm btn-success ">
+              <i className="fa-solid fa-check me-1"></i> Complete Workout
+            </button>
+          </div>
+        </div>
         <hr />
         <form
           onSubmit={(e) => {
@@ -119,22 +128,22 @@ function AddWorkout() {
           }}
         >
           {exercises.map((exercise, exerciseIndex) => (
-            <div
-              key={exerciseIndex}
-              className="mb-3 border p-2 position-relative"
-            >
-              <button
-                type="button"
-                className="btn btn-sm btn-danger position-absolute top-0 end-0 m-2"
-                onClick={() => handleRemoveExercise(exerciseIndex)}
-              >
-                Remove Exercise
-              </button>
-              <label className="form-label">Exercise Name</label>
+            <div key={exerciseIndex} className="mb-3 shadow-lg p-3">
+              <div className="container text-end mb-3 p-0">
+                <div>
+                  <a
+                    className="text-decoration-none text-danger"
+                    onClick={() => handleRemoveExercise(exerciseIndex)}
+                  >
+                    Remove Exercise
+                  </a>
+                </div>
+              </div>
+
               <input
                 type="text"
                 placeholder="Exercise name"
-                className="form-control mb-2"
+                className="form-control mb-3"
                 value={exercise.name}
                 onChange={(e) =>
                   handleExerciseNameChange(exerciseIndex, e.target.value)
@@ -142,74 +151,69 @@ function AddWorkout() {
                 required
               />
               {exercise.sets.map((set, setIndex) => (
-                <div
-                  key={setIndex}
-                  className="d-flex mb-2 gap-2 align-items-end"
-                >
+                <div key={setIndex} className="d-flex mb-3">
                   <div className="flex-fill">
-                    <label className="form-label">Reps</label>
                     <input
                       type="number"
                       placeholder="Reps"
                       className="form-control"
-                      value={set.reps}
+                      value={set.reps === 0 ? "" : set.reps}
                       onChange={(e) =>
                         handleSetChange(
                           exerciseIndex,
                           setIndex,
                           "reps",
-                          Number(e.target.value)
+                          e.target.value === "" ? 0 : Number(e.target.value)
                         )
                       }
                       required
                     />
                   </div>
-                  <div className="flex-fill">
-                    <label className="form-label">Weight (kg)</label>
+                  <div className="flex-fill ms-3">
                     <input
                       type="number"
-                      placeholder="Weight"
+                      placeholder="Weight (kg)"
                       className="form-control"
-                      value={set.weight}
+                      value={set.weight === 0 ? "" : set.weight}
                       onChange={(e) =>
                         handleSetChange(
                           exerciseIndex,
                           setIndex,
                           "weight",
-                          Number(e.target.value)
+                          e.target.value === "" ? 0 : Number(e.target.value)
                         )
                       }
                       required
                     />
                   </div>
-                  <button
-                    type="button"
-                    className="btn btn-danger"
-                    onClick={() => handleRemoveSet(exerciseIndex, setIndex)}
-                  >
-                    <i className="fa-solid fa-trash"></i>
-                  </button>
+                  <div className="align-self-center ms-3">
+                    <a onClick={() => handleRemoveSet(exerciseIndex, setIndex)}>
+                      <i className="fa-solid fa-trash"></i>
+                    </a>
+                  </div>
                 </div>
               ))}
-              <button
-                type="button"
-                className="btn btn-sm btn-secondary mb-2"
-                onClick={() => handleAddSet(exerciseIndex)}
-              >
-                Add Set
-              </button>
+
+              <div className="container text-center mb-3 mt-4">
+                <a
+                  className="text-decoration-none cursor-pointer"
+                  onClick={() => handleAddSet(exerciseIndex)}
+                >
+                  <i className="fa-solid fa-plus me-2"></i>Add Set
+                </a>
+              </div>
             </div>
           ))}
 
           <button
             type="button"
-            className="btn btn-sm btn-primary mb-3"
+            className="btn btn-primary mb-3 w-100"
             onClick={handleAddExercise}
           >
-            Add Exercise
+            <i className="fa-solid fa-plus me-2"></i>Add Exercise
           </button>
 
-          <div className="mb-3">
+          <div className="mb-3 shadow-lg p-3">
             <label className="form-label">Notes</label>
             <textarea
               className="form-control"
@@ -221,10 +225,6 @@ function AddWorkout() {
           </div>
 
           {error && <div className="alert alert-danger">{error}</div>}
-
-          <button type="submit" className="btn btn-success w-100">
-            Complete Workout
-          </button>
         </form>
       </div>
 
