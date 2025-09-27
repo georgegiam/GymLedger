@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { auth, db } from "../../firebase";
 import {
   collection,
@@ -98,10 +99,44 @@ function History() {
   };
 
   if (loading) return <p>Loading workouts...</p>;
-  if (workouts.length === 0) return <p>No workouts logged yet.</p>;
+  if (workouts.length === 0)
+    return (
+      <div className={`${styles.dashboard} container w-50 mb-5`}>
+        <div className="d-flex mb-3">
+          <div className="me-auto">
+            <h4>Workout History</h4>
+          </div>
+          <div className="align-self-center">
+            <Link
+              to="/dashboardBase/newWorkout"
+              className="btn btn-sm btn-primary"
+            >
+              <i className="fa-solid fa-plus me-2"></i>New workout
+            </Link>
+          </div>
+        </div>
+        <hr />
+        <p>No workouts logged yet.</p>
+      </div>
+    );
 
   return (
-    <div className={`${styles.dashboard} container w-75 mb-5`}>
+    <div className={`${styles.dashboard} container w-50 mb-5`}>
+      <div className="d-flex mb-3">
+        <div className="me-auto">
+          <h4>Workout History</h4>
+        </div>
+        <div className="align-self-center">
+          <Link
+            to="/dashboardBase/newWorkout"
+            className="btn btn-sm btn-primary"
+          >
+            <i className="fa-solid fa-plus me-2"></i>New workout
+          </Link>
+        </div>
+      </div>
+
+      <hr />
       <h4>Workout History</h4>
       {workouts.map((workout) => (
         <div key={workout.id} className="card mb-3">
