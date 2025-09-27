@@ -18,7 +18,7 @@ function AddWorkout() {
   const [exercises, setExercises] = useState<Exercise[]>([]);
   const [notes, setNotes] = useState("");
   const [error, setError] = useState("");
-  const [showConfirm, setShowConfirm] = useState(false); // <-- modal state
+  const [showConfirm, setShowConfirm] = useState(false);
   const navigate = useNavigate();
 
   const handleAddExercise = () =>
@@ -54,26 +54,13 @@ function AddWorkout() {
   };
 
   const validateWorkout = () => {
-    if (!auth.currentUser) {
-      setError("You must be logged in");
-      return false;
-    }
-    if (exercises.length === 0) {
-      setError("Please add at least one exercise");
-      return false;
-    }
+    if (!auth.currentUser) return false;
+    if (exercises.length === 0) return false;
     for (const exercise of exercises) {
-      if (exercise.sets.length === 0) {
-        setError(
-          `Exercise "${exercise.name || "Unnamed"}" must have at least one set`
-        );
-        return false;
-      }
+      if (!exercise.name.trim()) return false; // exercise name required
+      if (exercise.sets.length === 0) return false;
       for (const set of exercise.sets) {
-        if (set.reps <= 0 || set.weight <= 0) {
-          setError("All sets must have reps > 0 and weight > 0");
-          return false;
-        }
+        if (set.reps <= 0 || set.weight <= 0) return false;
       }
     }
     return true;
@@ -115,7 +102,12 @@ function AddWorkout() {
             <h4>New Workout</h4>
           </div>
           <div className="align-self-center">
-            <button type="submit" className="btn btn-sm btn-success ">
+            <button
+              type="button"
+              className="btn btn-sm btn-success"
+              disabled={!validateWorkout()}
+              onClick={() => setShowConfirm(true)}
+            >
               <i className="fa-solid fa-check me-1"></i> Complete Workout
             </button>
           </div>
@@ -124,7 +116,7 @@ function AddWorkout() {
         <form
           onSubmit={(e) => {
             e.preventDefault();
-            if (validateWorkout()) setShowConfirm(true); // show modal
+            if (validateWorkout()) setShowConfirm(true);
           }}
         >
           {exercises.map((exercise, exerciseIndex) => (
@@ -134,6 +126,7 @@ function AddWorkout() {
                   <a
                     className="text-decoration-none text-danger"
                     onClick={() => handleRemoveExercise(exerciseIndex)}
+                    style={{ cursor: "pointer" }}
                   >
                     Remove Exercise
                   </a>
@@ -150,6 +143,7 @@ function AddWorkout() {
                 }
                 required
               />
+
               {exercise.sets.map((set, setIndex) => (
                 <div key={setIndex} className="d-flex mb-3">
                   <div className="flex-fill">
@@ -187,7 +181,10 @@ function AddWorkout() {
                     />
                   </div>
                   <div className="align-self-center ms-3">
-                    <a onClick={() => handleRemoveSet(exerciseIndex, setIndex)}>
+                    <a
+                      onClick={() => handleRemoveSet(exerciseIndex, setIndex)}
+                      style={{ cursor: "pointer" }}
+                    >
                       <i className="fa-solid fa-trash"></i>
                     </a>
                   </div>
@@ -198,6 +195,7 @@ function AddWorkout() {
                 <a
                   className="text-decoration-none cursor-pointer"
                   onClick={() => handleAddSet(exerciseIndex)}
+                  style={{ cursor: "pointer" }}
                 >
                   <i className="fa-solid fa-plus me-2"></i>Add Set
                 </a>
