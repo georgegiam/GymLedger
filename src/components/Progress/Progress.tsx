@@ -7,11 +7,20 @@ import {
   query,
   orderBy,
 } from "firebase/firestore";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+} from "recharts";
 import styles from "../css/dashboard.module.css";
 
 interface ProgressEntry {
   id: string;
-  date: string; // formatted date
+  date: string;
   weight: number;
 }
 
@@ -28,7 +37,7 @@ function Progress() {
       auth.currentUser.uid,
       "progress"
     );
-    const q = query(progressRef, orderBy("date", "desc"));
+    const q = query(progressRef, orderBy("date", "asc")); // asc for chart
     const snapshot = await getDocs(q);
 
     const fetched: ProgressEntry[] = snapshot.docs.map((doc) => ({
@@ -64,9 +73,9 @@ function Progress() {
         "progress"
       );
       const formattedDate = new Date().toLocaleDateString("en-GB", {
-        weekday: "long",
+        weekday: "short",
         day: "numeric",
-        month: "long",
+        month: "short",
         year: "numeric",
       });
 
@@ -87,20 +96,17 @@ function Progress() {
       <h4>Weight Progress</h4>
       <hr />
 
-      <div className="input-group mb-5">
+      <div className="input-group mb-3">
         <input
-          type="text"
+          type="number"
           className="form-control"
           placeholder="Current Weight (kg)"
-          aria-label="Recipient’s username"
-          aria-describedby="button-addon2"
           value={weight}
           onChange={(e) => setWeight(Number(e.target.value))}
         />
         <button
           className="btn btn-primary"
           type="button"
-          id="button-addon2"
           onClick={handleAddProgress}
         >
           Add Progress
@@ -109,9 +115,26 @@ function Progress() {
 
       {error && <div className="alert alert-danger">{error}</div>}
 
-      <h5>Progress History</h5>
+      {entries.length > 0 && (
+        <div style={{ width: "100%", height: 300 }}>
+          <ResponsiveContainer width="100%" height="100%">
+            <LineChart
+              data={entries}
+              margin={{ top: 20, right: 0, left: -30, bottom: 20 }} // remove left/right margin
+            >
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="date" />
+              <YAxis domain={["auto", "auto"]} />
+              <Tooltip />
+              <Line type="monotone" dataKey="weight" stroke="#8884d8" />
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
+      )}
+
+      <h5 className="mt-4">Progress History</h5>
       <ul className="list-group">
-        {entries.map((entry) => (
+        {[...entries].reverse().map((entry) => (
           <li
             key={entry.id}
             className="list-group-item d-flex justify-content-between"
